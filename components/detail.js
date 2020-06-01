@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { FormattedNumber, IntlProvider } from 'react-intl';
-import api from "../services/api";
+import GyftedApi from "../services/gyfted-api";
 import { useStripe, CardElement, useElements } from "@stripe/react-stripe-js";
 import axios from 'axios';
 
@@ -43,7 +43,7 @@ const ProductDetails = (props) => {
     useEffect(() => {
         async function loadProductData() {
             console.log('item_id: ' + props.itemId)
-            const data = await api.getProductDetails(props.itemId);
+            const data = await GyftedApi.instance().getProductDetails(props.itemId);
             setProduct({
                 id: data.id,
                 name: data.name,
@@ -82,7 +82,7 @@ const ProductDetails = (props) => {
     };
 
     const renderStyles = () => (
-        <style jsx>{`
+        <style jsx="true">{`
             img {
                 max-width: 100%;
             }
