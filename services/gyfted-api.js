@@ -106,6 +106,24 @@ class GyftedApi {
                 return data;
             });
     };
+
+    async deleteCartItem(req) {
+        console.log('delete item from user cart');
+        return axios.delete(`${this.api_base}/checkout/carts/${req.user}/items/${req.item}`)
+            .then(res => {
+                if (res.status === 200) {
+                    return res.data;
+                } else {
+                    return null;
+                }
+            })
+            .then(data => {
+                if (!data) {
+                    throw Error("API Error");
+                }
+                return data;
+            });
+    };
 }
 
 export default new GyftedApi();

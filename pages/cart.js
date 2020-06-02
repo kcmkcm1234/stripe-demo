@@ -1,6 +1,6 @@
 import Layout from "../components/layout";
 import CartItem from "../components/cartitem";
-import { useState, useEffect, useReducer } from "react";
+import { useState, useEffect, useCallback } from "react";
 import api from "../services/gyfted-api";
 
 const USER_ID = 1;
@@ -259,11 +259,17 @@ const ShoppingCart = () => {
     );
 
     const load = async () => {
-        console.log("load user cart");
+        console.log(`load user ${USER_ID} cart`);
         const data = await api.getCart(USER_ID);
         if (data.id) {
             setCart(data);
+            console.log(data);
         }
+    };
+
+    const updateItemCallback = (id, status) => {
+        console.log(`item ${id} update was ${status ? 'succeeded' : 'failed'}, refresh state`);
+        load();
     };
 
     useEffect(() => {
@@ -272,7 +278,7 @@ const ShoppingCart = () => {
 
     const renderItems = () => {
         if (cart && cart.products) {
-            return cart.products.items.map(it => <CartItem key={it.id} />);
+            return cart.products.items.map(it => <CartItem key={it.id} item={it} onUpdate={updateItemCallback} />);
         }
         return (<div><p>No hay productos</p></div>)
     };
@@ -295,19 +301,19 @@ const ShoppingCart = () => {
                     <div className="totals">
                         <div className="totals-item">
                             <label>Subtotal</label>
-                            <div className="totals-value" id="cart-subtotal">71.97</div>
+                            <div className="totals-value" id="cart-subtotal">{cart.payment && cart.payment.payment.amount}</div>
                         </div>
                         <div className="totals-item">
                             <label>Tax (5%)</label>
-                            <div className="totals-value" id="cart-tax">3.60</div>
+                            <div className="totals-value" id="cart-tax">{cart.payment && cart.payment.taxes.amount}</div>
                         </div>
                         <div className="totals-item">
-                            <label>Shipping</label>
-                            <div className="totals-value" id="cart-shipping">15.00</div>
+                            <label>Fee (10%)</label>
+                            <div className="totals-value" id="cart-tax">{cart.payment && cart.payment.fee.amount}</div>
                         </div>
                         <div className="totals-item totals-item-total">
                             <label>Grand Total</label>
-                            <div className="totals-value" id="cart-total">90.57</div>
+                            <div className="totals-value" id="cart-total">{cart.payment && cart.payment.total.amount}</div>
                         </div>
                     </div>
 
